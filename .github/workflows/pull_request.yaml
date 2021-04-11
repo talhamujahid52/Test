@@ -1,0 +1,35 @@
+name: Pull Request Target
+
+on:
+  pull_request_target:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    name: Build
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip-ci]')"    
+    steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
+    - name: Check out code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{github.event.pull_request.head.sha}}
+
+    - name: Echo file
+      run: |
+        cat README.md
+       # Install Git
+    - name: Install Git
+      run: |
+        sudo apt-get update
+        sudo apt-get install git
+        git --version
+    - name: Git branch
+      run: |
+        git branch
